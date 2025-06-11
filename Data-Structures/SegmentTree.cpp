@@ -1,16 +1,18 @@
 struct Node{
 	int value;
 };
-class SegmentTree {
+class WakeMeUp {
 public:
 	vector<Node> values;
 	int sz;
 	Node NEUTRAL = {0};
-	SegmentTree(int n) {
+	WakeMeUp(vector<int>&a) {
 		sz = 1;
+		int n = a.size();
 		while(sz<n)
 			sz <<= 1;
 		values.resize(2*sz+1);
+		build(a);
 	}
 	Node single(int v) {
 		return {v};
@@ -18,7 +20,7 @@ public:
 	Node merge(Node a, Node b) {
 		return {a.value + b.value};
 	}
-	void build(vector<int>& a) {
+	void build(vector<int> &a) {
 		build(a, 0, 0, sz);
 	}
 	void build(vector<int>& a, int x, int lx, int rx) {
@@ -32,19 +34,19 @@ public:
 		build(a, 2*x+2, m, rx);
 		values[x] = merge(values[2*x+1], values[2*x+2]);
 	}
-	void set(int i, int v) {
-		set(i, v, 0, 0, sz);
+	void pointSet(int i, int v) {
+		pointSet(i, v, 0, 0, sz);
 	}
-	void set(int i, int v, int x, int lx, int rx) {
+	void pointSet(int i, int v, int x, int lx, int rx) {
 		if(rx - lx == 1) {
 			values[x] = single(v);
 			return;
 		}
 		int m = lx+rx>>1;
 		if(i < m)
-			set(i, v, 2*x+1, lx, m);
+			pointSet(i, v, 2*x+1, lx, m);
 		else
-			set(i, v, 2*x+2, m, rx);
+			pointSet(i, v, 2*x+2, m, rx);
 		values[x] = merge(values[2*x+1], values[2*x+2]);
 	}
 	Node get(int l, int r) {
