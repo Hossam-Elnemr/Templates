@@ -1,3 +1,8 @@
+// NEUTRAL element
+// Node: value, lazy, change()
+// merge()
+// propagate: values[x].lazy = opertation identity
+
 struct Node {
 	int value = 0, lazy = 0;
 	bool isLazy = 0;
