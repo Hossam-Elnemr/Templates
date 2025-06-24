@@ -1,29 +1,26 @@
-struct SparseTable{
-#define T int
-    T *a[30]{};
-    int *lg;
-    // const int &(*merge)(const int &, const int &);
-    T merge(int x, const int y) {
-    	return __gcd(x, y);
+template<typename T, class CMP = function<T(const T &, const T &)>>
+class SparseTable {
+public:
+    int n{};
+    vector<vector<T>> sp;
+    CMP func;
+
+    void build(const vector<T> &a, const CMP &f) {
+        func = f;
+        n = static_cast<int>(a.size());
+        int max_log = 32 - __builtin_clz(n);
+        sp.resize(max_log);
+        sp[0] = a;
+        for (int j = 1; j < max_log; ++j) {
+            sp[j].resize(n - (1 << j) + 1);
+            for (int i = 0; i <= n - (1 << j); ++i) {
+                sp[j][i] = func(sp[j - 1][i], sp[j - 1][i + (1 << (j - 1))]);
+            }
+        }
     }
-    explicit SparseTable(const int n, const int b[]){
-        lg = new int[n+1]{};
-        for(int i=2;i<=n;++i)
-            lg[i] = lg[i/2] + 1;
-        for(auto & j : a)
-            j = new T[n];
-        for(int i=0;i<n;++i)
-            a[0][i] = b[i];
-        for(int j=1;j<30;++j)
-            for(int i=0;i<=n-(1<<j);++i)
-                a[j][i] = merge(a[j-1][i], a[j-1][i+(1<<(j-1))]);
-    }
-    ~SparseTable() {
-        delete[] lg;
-        for(const auto & j : a)
-            delete[] j;
-    }
-    [[nodiscard]] T get(const int l, const int r) {
-        return merge(a[lg[r-l+1]][l], a[lg[r-l+1]][r-(1<<lg[r-l+1])+1]);
+
+    T query(int l, int r) const {
+        int lg = 32 - __builtin_clz(r - l + 1) - 1;
+        return func(sp[lg][l], sp[lg][r - (1 << lg) + 1]);
     }
 };
