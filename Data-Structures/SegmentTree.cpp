@@ -1,7 +1,7 @@
 // NEUTRAL element
 // Node: value, lazy, change()
 // merge()
-// propagate: values[x].lazy = opertation identity
+// propagate: values[x].lazy = operation identity
 
 struct Node {
 	int value = 0, lazy = 0;
