@@ -1,59 +1,62 @@
-struct AdvancedTrie {
-	#define T int
-    static constexpr char B = 2;
-    static constexpr char S = 32;
-    struct node {
-        node* a[B]{};
-        T e = 0;
-    };
-    node* root = new node();
-
-    static std::string convert(int x) {
-        std::string s;
-        char cnt = 0;
-        while (cnt++ < S) {
-            s.push_back(x % B);
-            x /= B;
-        }
-        std::reverse(s.begin(), s.end());
-        return s;
+struct Node {
+    Node* links[2];
+    int countPrefix = 0;
+    bool containsKey(int bit) {
+        return links[bit] != nullptr;
     }
-    
-    [[nodiscard]] T* get(const std::string& s) const {
-        node* x = root;
-        for (const auto c : s) {
-            if (x->a[c] == nullptr)
-                x->a[c] = new node();
-            x = x->a[c];
-        }
-        return &x->e;
+    Node* get(int bit) {
+        return links[bit];
     }
-    
-    [[nodiscard]] T* get(const int s) const {
-        return get(convert(s));
+    void put(int bit, Node* node) {
+        links[bit] = node;
     }
-    
-    [[nodiscard]] int count(const std::string& s) const {
-        const node* x = root;
-        for (const auto c : s) {
-            if (x->a[c] == nullptr)
-                return 0;
-            x = x->a[c];
-        }
-        return x->e;
+    void increasePrefix() {
+        ++countPrefix;
     }
-    
-    [[nodiscard]] int count(const int s) const {
-        return count(convert(s));
+    void decreasePrefix() {
+        --countPrefix;
     }
-
+    int getPrefxix() {
+        return countPrefix;
+    }
+};
+class BinaryTrie {
+    Node *root;
+public:
+    BinaryTrie() {
+        root = new Node();
+    }
     void insert(int num) {
-        node* x = root;
-        for (const auto c : convert(num)) {
-            if (x->a[c] == nullptr)
-                x->a[c] = new node();
-            x = x->a[c];
-            x->e++;
+        Node *node = root;
+        for (int i = 31; i>=0; --i) {
+            int bit = num>>i & 1;
+            if (!node->containsKey(bit))
+                node->put(bit, new Node());
+            node = node->get(bit);
+            node->increasePrefix();
         }
+    }
+    void erase(int num) {
+        Node *node = root;
+        for (int i = 31; i>=0; --i) {
+            int bit = num>>i & 1;
+            node = node->get(bit);
+            node->decreasePrefix();
+        }
+    }
+    int getMaxXor(int num) {
+        Node *node = root;
+        int ans = 0;
+        for (int i = 31; i>=0; --i) {
+            int bit = num>>i & 1;
+            Node* desiredNode = node->get(bit ^ 1);
+            if (node->containsKey(bit ^ 1) && desiredNode->getPrefxix() > 0) {
+                ans |= 1<<i;
+                node = desiredNode;
+            }
+            else
+                node = node->get(bit);
+        }
+        return ans;
     }
 };
