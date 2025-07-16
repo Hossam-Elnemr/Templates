@@ -1,6 +1,7 @@
 const int N = 504;
+int n, m;
 vector<vector<int>> dist(N, vector<int>(N, 1e14));
-void floyd(int n) {
+void floyd() {
 	for(int i = 1; i<=n; ++i)
 		dist[i][i] = 0;
 
