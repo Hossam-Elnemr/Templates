@@ -1,3 +1,4 @@
+// time = 0.5 seconds for n = 1e9
 vector<int> bigSieve(const int N, const int Q = 17, const int L = 1 << 15) {
   static const int rs[] = {1, 7, 11, 13, 17, 19, 23, 29};
   struct P { 
