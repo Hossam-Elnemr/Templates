@@ -19,7 +19,7 @@ public:
         }
     }
 
-    T query(int l, int r) const {
+    T get(int l, int r) const {
         int lg = 32 - __builtin_clz(r - l + 1) - 1;
         return func(sp[lg][l], sp[lg][r - (1 << lg) + 1]);
     }
