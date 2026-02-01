@@ -76,6 +76,7 @@ public:
 		pointSet(i, v, 0, 0, sz);
 	}
 	void pointSet(int i, int v, int x, int lx, int rx) {
+		propagate(x, lx, rx);
 		if(rx - lx == 1) {
 			values[x] = single(v);
 			return;
