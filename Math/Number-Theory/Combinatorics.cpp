@@ -5,14 +5,12 @@ long long subt(long long a, long long b) { return ((a % MOD) - (b % MOD) + MOD) 
 long long add(long long a, long long b) { return ((a % MOD) + (b % MOD)) % MOD; }
 long long multi(long long a, long long b) { return ((a % MOD) * (b % MOD)) % MOD; }
 long long fp(long long b, long long exp) {
-    // b power exp;
-    if (exp == 0) return 1;
-    long long res = 1;
-    while (exp) {
-        if (exp % 2 == 1)
-            res = multi(res, b);
-        b = multi(b, b), exp /= 2;
-    }
+    if(exp == 0)
+        return 1;
+    long long res = fp(b, exp/2);
+    res = mul(res, res);
+    if(exp&1)
+        res = mul(res, b);
     return res;
 }
 long long INV(long long a) { return fp(a, MOD - 2); }
