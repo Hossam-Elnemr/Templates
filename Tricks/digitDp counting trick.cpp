@@ -4,9 +4,9 @@
 // Problem link: https://codeforces.com/problemset/problem/1073/E
 
 
-// Instead of creating a state for the number constricted so far, we can calculate for each state how many times
+// Instead of creating a state for the number constructed so far, we can calculate for each state how many times
 // each digit contributed in this path and then add these contributions -> digit * numberofWays (contribuitions) * 10 ^ pos
-// pos = n - idx - 1 (as we start the number from the left so we get the corect position which is n - idx - 1).
+// pos = n - idx - 1 (as we start the number from the left so we get the correct position which is n - idx - 1).
 
 
 // Always, the answers are complicated - and the questions are simple.
