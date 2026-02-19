@@ -25,7 +25,7 @@ struct DSU {
     }
 
     //         *** NOTE ***
-    //   If you you want to use rollback, remove path compression first
+    //   If you want to use rollback, remove path compression first
     // void undo() {
     //     array<int, 4> cur = st.top();
     //     st.pop();
