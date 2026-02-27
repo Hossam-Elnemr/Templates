@@ -11,7 +11,7 @@ void build(int x) { // builds a single block
 
 void update(int i, int val) { // a[i] = val
     a[i] = val;
-    build(i / SQ); // build my block (block contains i)
+    build(i / SQ); // rebuild my block (block contains i)
 }
 
 int get(int l, int r) { // min(a[l...r])
