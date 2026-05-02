@@ -45,3 +45,14 @@ pair<int, int> getRange(int l, int r, vector<pair<int, int>> &h) { // give param
     res.second = mul(add(h[r].second ,-h[l-1].second), inv[l-1][1]);
     return res;
 }
+pair<int, int> concatenate(pair<int, int> a, int lenA, pair<int, int> b) {
+    // a = s1[0] * p^0 + s1[1] * p^1
+    // b = s2[0] * p^0 + s2[1] * p^1
+    // conc = a + b
+    // hash(conc) = s1[0] * p^0 + s1[1] * p^1 + s2[0] * p^2 + s2[1] * p^3
+    // a + b -> hash(a + b) = hash(a) + hash(b) * p^lenA
+    pair<int, int> res;
+    res.first = add(a.first, mul(b.first, pw[lenA][0]));
+    res.second = add(a.second, mul(b.second, pw[lenA][1]));
+    return res;
+}
