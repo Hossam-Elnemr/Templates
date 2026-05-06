@@ -1,62 +1,58 @@
-struct Node {
-    Node* links[2];
-    int countPrefix = 0;
-    bool containsKey(int bit) {
-        return links[bit] != nullptr;
-    }
-    Node* get(int bit) {
-        return links[bit];
-    }
-    void put(int bit, Node* node) {
-        links[bit] = node;
-    }
-    void increasePrefix() {
-        ++countPrefix;
-    }
-    void decreasePrefix() {
-        --countPrefix;
-    }
-    int getPrefxix() {
-        return countPrefix;
-    }
-};
-class BinaryTrie {
-    Node *root;
-public:
+struct BinaryTrie {
+    struct Node {
+        int child[2];
+        int pre, cnt;
+        Node() {
+            child[1] = child[0] = 0;
+            pre = 0; // how many inserted numbers use that prefix path
+            cnt = 0; // how many numbers end exactly at this node
+        }
+    };
+    vector<Node> nodes;
+ 
     BinaryTrie() {
-        root = new Node();
+        nodes.push_back(Node());
     }
+ 
     void insert(int num) {
-        Node *node = root;
-        for (int i = 31; i>=0; --i) {
-            int bit = num>>i & 1;
-            if (!node->containsKey(bit))
-                node->put(bit, new Node());
-            node = node->get(bit);
-            node->increasePrefix();
+        int node = 0;
+        for (int i = 30; i>=0; --i) {
+            int bit = num >> i & 1;
+            if (nodes[node].child[bit] == 0) {
+                nodes.push_back(Node());
+                nodes[node].child[bit] = (int)nodes.size() - 1;
+            }
+            node = nodes[node].child[bit];
+            ++nodes[node].pre;
         }
+        ++nodes[node].cnt;
     }
-    void erase(int num) {
-        Node *node = root;
-        for (int i = 31; i>=0; --i) {
-            int bit = num>>i & 1;
-            node = node->get(bit);
-            node->decreasePrefix();
+ 
+    void erase(int num) { // one occurence
+        int prv = -1, node = 0;
+        for (int i = 30; i>=0; --i) {
+            int bit = num >> i & 1;
+            prv = node;
+            node = nodes[node].child[bit];
+            --nodes[node].pre;
+            if (nodes[node].pre == 0)
+                nodes[prv].child[bit] = 0;
         }
+        --nodes[node].cnt;
     }
-    int getMaxXor(int num) {
-        Node *node = root;
-        int ans = 0;
-        for (int i = 31; i>=0; --i) {
-            int bit = num>>i & 1;
-            Node* desiredNode = node->get(bit ^ 1);
-            if (node->containsKey(bit ^ 1) && desiredNode->getPrefxix() > 0) {
-                ans |= 1<<i;
-                node = desiredNode;
+ 
+    int get(int num) {
+        int ans = 0, node = 0;
+        for (int i = 30; i>=0; --i) {
+            int target = num >> i & 1 ^ 1;
+            if (nodes[node].child[target] != 0) {
+                ans |= 1 << i;
+                node = nodes[node].child[target];
             }
             else
-                node = node->get(bit);
+                node = nodes[node].child[target ^ 1];
         }
+ 
         return ans;
     }
 };
