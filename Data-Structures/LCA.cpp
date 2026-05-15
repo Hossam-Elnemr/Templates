@@ -1,3 +1,6 @@
+// Always, the answers are complicated - and the questions are simple.
+#include <bits/stdc++.h>
+using namespace std;
 struct LCA {
     int lg;
     int timer = 0;
@@ -42,18 +45,14 @@ struct LCA {
         return node;
     }
 
-    int lca(int u, int v) { // idea: get the farthest node that isn't ancestor to both
+    int lca(int u, int v) { // move u and validate (idea: get the farthest node that isn't ancestor to both)
         if (depth[u] > depth[v]) // always u is above v or at same level
             swap(u, v);
-        v = kth(v, depth[v] - depth[u]);
-        if (u == v)
+        if (isPar(u, v))
             return u;
-
         for (int j = lg - 1; j>=0; --j)
-            if (par[u][j] != par[v][j]) {
+            if (!isPar(par[u][j], v))
                 u = par[u][j];
-                v = par[v][j];
-            }
         return par[u][0];
     }
 
@@ -62,3 +61,11 @@ struct LCA {
         return depth[u] - depth[lc] + depth[v] - depth[lc];
     }
 };
+int32_t main() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    std::ios_base::sync_with_stdio(false); std::cin.tie(false);
+    
+}
