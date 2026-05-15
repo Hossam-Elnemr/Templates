@@ -1,10 +1,11 @@
 struct LCA {
-    const int lg = 20;
+    int lg;
     int timer = 0;
     vector<vector<int>> par;
     vector<int> in, out, depth;
 
     LCA(int n, int root, vector<int> adj[]) {
+        lg = __lg(n) + 1;
         par = vector<vector<int>>(n + 1, vector<int>(lg));
         in = out = vector<int>(n + 1);
         depth = vector<int>(n + 1, -1);
@@ -41,14 +42,18 @@ struct LCA {
         return node;
     }
 
-    int lca(int u, int v) { // move u and validate (idea: get the farthest node that isn't ancestor to both)
+    int lca(int u, int v) { // idea: get the farthest node that isn't ancestor to both
         if (depth[u] > depth[v]) // always u is above v or at same level
             swap(u, v);
-        if (isPar(u, v))
+        v = kth(v, depth[v] - depth[u]);
+        if (u == v)
             return u;
+
         for (int j = lg - 1; j>=0; --j)
-            if (!isPar(par[u][j], v))
+            if (par[u][j] != par[v][j]) {
                 u = par[u][j];
+                v = par[v][j];
+            }
         return par[u][0];
     }
 
