@@ -1,6 +1,3 @@
-// Always, the answers are complicated - and the questions are simple.
-#include <bits/stdc++.h>
-using namespace std;
 struct LCA {
     int lg;
     int timer = 0;
