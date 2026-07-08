@@ -1,8 +1,8 @@
+# define int long long
 int MOD = 1e9+7;
-const int N = 1e5 + 5;
+const int N = 1e6 + 5;
 long long fact[N], factinv[N];
-long long subt(long long a, long long b) { return ((a % MOD) - (b % MOD) + MOD) % MOD; }
-long long add(long long a, long long b) { return ((a % MOD) + (b % MOD)) % MOD; }
+long long add(long long a, long long b) { return ((a % MOD) + (b % MOD) + MOD) % MOD; }
 long long mul(long long a, long long b) { return ((a % MOD) * (b % MOD)) % MOD; }
 long long fp(long long b, long long exp) {
     if(exp == 0)
