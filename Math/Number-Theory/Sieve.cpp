@@ -1,5 +1,5 @@
 const int N = 1e5;
-bitset<N> notPrime;
+bitset<N + 1> notPrime;
 vector<int> primes;
 void sieve() {
     notPrime[0] = notPrime[1] = true;
