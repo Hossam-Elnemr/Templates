@@ -1,44 +1,63 @@
-const int mod = 1e9+7;
-template <typename T> void matmul(vector<vector<T>> &a, vector<vector<T>> b) {
-    int n = a.size(), m = a[0].size(), p = b[0].size();
-    vector<vector<T>> c(n, vector<T>(p));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < p; j++) {
-            for (int k = 0; k < m; k++) {
-                c[i][j] = (c[i][j] + a[i][k] * b[k][j])%mod;
-            }
+# define int long long
+using row = vector<long long>;
+using matrix = vector<row>;
+ 
+const long long MOD = 10000;
+ 
+struct Matrix {
+    int n;
+    matrix mat;
+ 
+    Matrix(int n) : n(n), mat(n, row(n, 0)) {}
+ 
+    void make_identity() {
+        for (int i = 0; i < n; ++i) {
+            mat[i][i] = 1;
         }
     }
-    a = c;
-}
-template <typename T> struct Matrix {
-    vector<vector<T>> mat;
-    Matrix() {}
-    Matrix(vector<vector<T>> a) { mat = a; }
-    Matrix(int n, int m) {
-        mat.resize(n);
-        for (int i = 0; i < n; i++) { mat[i].resize(m); }
+ 
+    Matrix operator*(const Matrix& other) const {
+        Matrix res(n);
+ 
+        for (int i = 0; i < n; ++i) {
+            for (int k = 0; k < n; ++k) {
+ 
+                if (mat[i][k] == 0) continue;
+ 
+                long long val = mat[i][k] % MOD;
+                for (int j = 0; j < n; ++j) {
+                    res.mat[i][j] += val * other.mat[k][j];
+ 
+                    res.mat[i][j] %= MOD;
+                }
+            }
+        }
+        return res;
     }
-    int rows() const { return mat.size(); }
-    int cols() const { return mat[0].size(); }
-    void makeiden() {
-        // used on new matrices, if matrix has entries make it zero first or use mat[i][j] = (i==j)
-        for (int i = 0; i < rows(); i++) { mat[i][i] = 1LL; }
+    row multiply(const row& v) {
+        row res(n, 0);
+ 
+        for (int i = 0; i < n; ++i) {
+ 
+            if (v[i] == 0) continue;
+ 
+            long long val = v[i] % MOD;
+            for (int j = 0; j < n; ++j) {
+                res[j] += val * mat[i][j];
+                res[j] %= MOD;
+            }
+        }
+        return res;
     }
-    Matrix operator*=(const Matrix &b) {
-        matmul(mat, b.mat);
-        return *this;
-    }
-    Matrix operator*(const Matrix &b) { return Matrix(*this) *= b; }
 };
  
-template<typename T> Matrix<T> matrixExpo(Matrix<T>& m, int n) {
-   if (n==0) {
-       Matrix<T> id(m.rows(), m.cols());
-       id.makeiden();
-       return id;
-   }
-    if (n&1) return m * matrixExpo(m, n-1);
-    Matrix<T> temp = matrixExpo(m, n/2);
-    return temp*temp;
+Matrix power(Matrix base, long long exp) {
+    Matrix res(base.n);
+    res.make_identity();
+    while (exp > 0) {
+        if (exp & 1) res = res * base;
+        base = base * base;
+        exp >>= 1;
+    }
+    return res;
 }
