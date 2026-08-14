@@ -126,4 +126,36 @@ public:
 	Node get(int i, int ver) {
 		return get(i, i+1, ver);
 	}
+
+	int kth(int l, int r, int k) {
+		return kth(roots[l], roots[r + 1], k, 0, sz);
+	}
+
+	int kth(int leftRoot, int rightRoot, int k, int lx, int rx) {
+		if(rx - lx == 1)
+			return comp[lx];
+
+		int leftCount =
+			values[values[rightRoot].left].value -
+			values[values[leftRoot].left].value;
+
+		int m = lx + rx >> 1;
+
+		if(k <= leftCount)
+			return kth(
+				values[leftRoot].left,
+				values[rightRoot].left,
+				k,
+				lx,
+				m
+			);
+
+		return kth(
+			values[leftRoot].right,
+			values[rightRoot].right,
+			k - leftCount,
+			m,
+			rx
+		);
+	}
 };
