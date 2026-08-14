@@ -9,7 +9,6 @@ using namespace std;
 const long long INF = 1e18;
 
 struct Dinic {
-    // Structure to represent a directed edge in the residual graph
     struct Edge {
         int to;
         long long cap;  // Capacity of the edge
@@ -17,12 +16,12 @@ struct Dinic {
         int rev;        // Index of the reverse edge in `adj[to]`
     };
 
-    int n; // Number of nodes
-    vector<vector<Edge>> adj; // Adjacency list
-    vector<int> level;        // Distance from source (level graph)
-    vector<int> ptr;          // Next edge to process in DFS (dead-end optimization)
+    int n;
+    vector<vector<Edge>> adj;
+    vector<int> level;
+    vector<int> ptr;
 
-    // Constructor: n is the total number of nodes (0-indexed)
+    
     Dinic(int n) : n(n), adj(n), level(n), ptr(n) {}
 
     // Add a directed edge from `u` to `v` with capacity `cap`.
@@ -35,7 +34,7 @@ struct Dinic {
         adj[to].push_back({from, 0, 0, (int)adj[from].size() - 1});
     }
 
-    // BFS to build the level graph. Returns true if there's a path from s to t.
+    
     bool bfs(int s, int t) {
         fill(level.begin(), level.end(), -1);
         level[s] = 0;
@@ -47,20 +46,19 @@ struct Dinic {
             q.pop();
             
             for (auto& edge : adj[v]) {
-                // If there is residual capacity and the node hasn't been visited
                 if (edge.cap - edge.flow > 0 && level[edge.to] == -1) {
                     level[edge.to] = level[v] + 1;
                     q.push(edge.to);
                 }
             }
         }
-        return level[t] != -1; // True if the sink is reachable
+        return level[t] != -1;
     }
 
-    // DFS to find augmenting paths along the level graph
+    
     long long dfs(int v, int t, long long pushed) {
-        if (pushed == 0) return 0;     // No flow to push
-        if (v == t) return pushed;     // Reached the sink
+        if (pushed == 0) return 0;
+        if (v == t) return pushed;
 
         // `cid` is passed by reference to ptr[v] to remember dead ends
         for (int& cid = ptr[v]; cid < adj[v].size(); ++cid) {
@@ -70,10 +68,10 @@ struct Dinic {
             // Only traverse edges in the level graph with remaining capacity
             if (level[v] + 1 != level[tr] || edge.cap - edge.flow == 0) continue;
             
-            // Recursively push flow
+            
             long long push = dfs(tr, t, min(pushed, edge.cap - edge.flow));
             
-            if (push == 0) continue; // If no flow was pushed, try next edge
+            if (push == 0) continue;
             
             // Update flow for forward and reverse edges
             edge.flow += push;
